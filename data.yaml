@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 31
+names: ['Front-Windscreen-Damage', 'Headlight-Damage', 'Major-Rear-Bumper-Dent', 'Rear-windscreen-Damage', 'RunningBoard-Dent', 'Sidemirror-Damage', 'Signlight-Damage', 'Taillight-Damage', 'bonnet-dent', 'damaged', 'damaged-door', 'damaged-front-bumper', 'damaged-head-light', 'damaged-hood', 'damaged-rear-bumper', 'damaged-rear-window', 'damaged-tail-light', 'damaged-trunk', 'damaged-window', 'damaged-windscreen', 'dent', 'dent-or-scratch', 'doorouter-dent', 'fender-dent', 'front-bumper-dent', 'medium-Bodypanel-Dent', 'pillar-dent', 'quaterpanel-dent', 'rear-bumper-dent', 'roof-dent', 'scratch']
+
+roboflow:
+  workspace: skillfactory
+  project: car-damage-c1f0i
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/skillfactory/car-damage-c1f0i/dataset/1
