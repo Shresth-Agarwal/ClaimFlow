@@ -14,6 +14,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger("auth_system")
 
+app = FastAPI(title="Role-Based Auth System (DynamoDB Ready)")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,8 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True
 )
-
-app = FastAPI(title="Role-Based Auth System (DynamoDB Ready)")
 
 # Include all modular routers
 app.include_router(auth.router)
