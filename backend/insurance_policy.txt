@@ -1,0 +1,161 @@
+---
+Clause: 1.1
+Page: 1
+Content: Health insurance policy covers hospitalization expenses incurred due to illness or injury.
+---
+Clause: 1.2
+Page: 2
+Content: Coverage begins after successful payment of premium and policy activation.
+---
+Clause: 2.1
+Page: 3
+Content: A waiting period of 30 days applies for all new policies except accidents.
+---
+Clause: 2.2
+Page: 4
+Content: Pre-existing diseases are not covered for the first 2 years of the policy.
+---
+Clause: 3.1
+Page: 5
+Content: Daycare procedures that do not require 24-hour hospitalization are covered.
+---
+Clause: 3.2
+Page: 6
+Content: Outpatient consultations are not covered under this policy.
+---
+Clause: 4.1
+Page: 7
+Content: Surgery expenses are covered up to a maximum of ₹2,00,000.
+---
+Clause: 4.2
+Page: 8
+Content: Inpatient treatment costs including room rent and nursing are covered.
+---
+Clause: 4.3
+Page: 9
+Content: ICU charges are covered up to ₹5,000 per day.
+---
+Clause: 5.1
+Page: 10
+Content: Ambulance charges are reimbursed up to ₹2,000 per hospitalization.
+---
+Clause: 5.2
+Page: 11
+Content: Emergency hospitalization must be reported within 24 hours.
+---
+Clause: 6.1
+Page: 12
+Content: Pre-authorization is mandatory for planned hospital admissions.
+---
+Clause: 6.2
+Page: 13
+Content: Failure to obtain pre-authorization may result in claim rejection.
+---
+Clause: 7.1
+Page: 14
+Content: Claims exceeding ₹2,00,000 require manual verification and approval.
+---
+Clause: 7.2
+Page: 15
+Content: Cashless claims are processed only at network hospitals.
+---
+Clause: 8.1
+Page: 16
+Content: Cosmetic or aesthetic treatments are not covered.
+---
+Clause: 8.2
+Page: 17
+Content: Dental treatments are excluded unless due to accidental injury.
+---
+Clause: 9.1
+Page: 18
+Content: Mental health treatments are covered as per IRDAI guidelines.
+---
+Clause: 9.2
+Page: 19
+Content: Maternity expenses are covered after a waiting period of 9 months.
+---
+Clause: 10.1
+Page: 20
+Content: Newborn baby coverage starts after 90 days of birth.
+---
+Clause: 10.2
+Page: 21
+Content: Vaccination expenses are not covered under this policy.
+---
+Clause: 11.1
+Page: 22
+Content: Original medical bills and discharge summary must be submitted for reimbursement.
+---
+Clause: 11.2
+Page: 23
+Content: Incomplete documentation may lead to claim rejection.
+---
+Clause: 12.1
+Page: 24
+Content: Fraudulent claims will lead to policy termination.
+---
+Clause: 12.2
+Page: 25
+Content: Submitting false documents will result in blacklisting of the policyholder.
+---
+Clause: 13.1
+Page: 26
+Content: Motor insurance covers accidental damage to insured vehicles.
+---
+Clause: 13.2
+Page: 27
+Content: Damage caused due to natural disasters is covered.
+---
+Clause: 14.1
+Page: 28
+Content: Pre-existing vehicle damage is not covered under motor insurance.
+---
+Clause: 14.2
+Page: 29
+Content: Driving under the influence of alcohol voids the claim.
+---
+Clause: 15.1
+Page: 30
+Content: Third-party liability is covered up to ₹5,00,000.
+---
+Clause: 15.2
+Page: 31
+Content: Personal accident cover is provided to the driver.
+---
+Clause: 16.1
+Page: 32
+Content: Repair costs must be validated by authorized service centers.
+---
+Clause: 16.2
+Page: 33
+Content: Use of non-genuine spare parts may lead to claim rejection.
+---
+Clause: 17.1
+Page: 34
+Content: Theft claims must be reported to police within 24 hours.
+---
+Clause: 17.2
+Page: 35
+Content: Failure to submit FIR copy will result in rejection.
+---
+Clause: 18.1
+Page: 36
+Content: Claims involving intentional damage are not covered.
+---
+Clause: 18.2
+Page: 37
+Content: Wear and tear damage is excluded from coverage.
+---
+Clause: 19.1
+Page: 38
+Content: Policy renewal must be completed before expiry to maintain continuity benefits.
+---
+Clause: 19.2
+Page: 39
+Content: Grace period of 15 days is allowed for renewal.
+---
+Clause: 20.1
+Page: 40
+Content: Claims are settled within 7 working days after approval.
+---

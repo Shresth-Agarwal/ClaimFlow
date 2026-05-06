@@ -1,0 +1,79 @@
+Page 1, Clause 1.1: Health insurance policy covers hospitalization expenses incurred due to illness or injury.
+
+Page 2, Clause 1.2: Coverage begins after successful payment of premium and policy activation.
+
+Page 3, Clause 2.1: A waiting period of 30 days applies for all new policies except accidents.
+
+Page 4, Clause 2.2: Pre-existing diseases are not covered for the first 2 years of the policy.
+
+Page 5, Clause 3.1: Daycare procedures that do not require 24-hour hospitalization are covered.
+
+Page 6, Clause 3.2: Outpatient consultations are not covered under this policy.
+
+Page 7, Clause 4.1: Surgery expenses are covered up to a maximum of ₹2,00,000.
+
+Page 8, Clause 4.2: Inpatient treatment costs including room rent and nursing are covered.
+
+Page 9, Clause 4.3: ICU charges are covered up to ₹5,000 per day.
+
+Page 10, Clause 5.1: Ambulance charges are reimbursed up to ₹2,000 per hospitalization.
+
+Page 11, Clause 5.2: Emergency hospitalization must be reported within 24 hours.
+
+Page 12, Clause 6.1: Pre-authorization is mandatory for planned hospital admissions.
+
+Page 13, Clause 6.2: Failure to obtain pre-authorization may result in claim rejection.
+
+Page 14, Clause 7.1: Claims exceeding ₹2,00,000 require manual verification and approval.
+
+Page 15, Clause 7.2: Cashless claims are processed only at network hospitals.
+
+Page 16, Clause 8.1: Cosmetic or aesthetic treatments are not covered.
+
+Page 17, Clause 8.2: Dental treatments are excluded unless due to accidental injury.
+
+Page 18, Clause 9.1: Mental health treatments are covered as per IRDAI guidelines.
+
+Page 19, Clause 9.2: Maternity expenses are covered after a waiting period of 9 months.
+
+Page 20, Clause 10.1: Newborn baby coverage starts after 90 days of birth.
+
+Page 21, Clause 10.2: Vaccination expenses are not covered under this policy.
+
+Page 22, Clause 11.1: Original medical bills and discharge summary must be submitted for reimbursement.
+
+Page 23, Clause 11.2: Incomplete documentation may lead to claim rejection.
+
+Page 24, Clause 12.1: Fraudulent claims will lead to policy termination.
+
+Page 25, Clause 12.2: Submitting false documents will result in blacklisting of the policyholder.
+
+Page 26, Clause 13.1: Motor insurance covers accidental damage to insured vehicles.
+
+Page 27, Clause 13.2: Damage caused due to natural disasters is covered.
+
+Page 28, Clause 14.1: Pre-existing vehicle damage is not covered under motor insurance.
+
+Page 29, Clause 14.2: Driving under the influence of alcohol voids the claim.
+
+Page 30, Clause 15.1: Third-party liability is covered up to ₹5,00,000.
+
+Page 31, Clause 15.2: Personal accident cover is provided to the driver.
+
+Page 32, Clause 16.1: Repair costs must be validated by authorized service centers.
+
+Page 33, Clause 16.2: Use of non-genuine spare parts may lead to claim rejection.
+
+Page 34, Clause 17.1: Theft claims must be reported to police within 24 hours.
+
+Page 35, Clause 17.2: Failure to submit FIR copy will result in rejection.
+
+Page 36, Clause 18.1: Claims involving intentional damage are not covered.
+
+Page 37, Clause 18.2: Wear and tear damage is excluded from coverage.
+
+Page 38, Clause 19.1: Policy renewal must be completed before expiry to maintain continuity benefits.
+
+Page 39, Clause 19.2: Grace period of 15 days is allowed for renewal.
+
+Page 40, Clause 20.1: Claims are settled within 7 working days after approval.

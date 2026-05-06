@@ -1,0 +1,202 @@
+[
+  {
+    "text": "Health insurance policy covers hospitalization expenses incurred due to illness or injury.",
+    "page": 1,
+    "clause": "1.1"
+  },
+  {
+    "text": "Coverage begins after successful payment of premium and policy activation.",
+    "page": 2,
+    "clause": "1.2"
+  },
+  {
+    "text": "A waiting period of 30 days applies for all new policies except accidents.",
+    "page": 3,
+    "clause": "2.1"
+  },
+  {
+    "text": "Pre-existing diseases are not covered for the first 2 years of the policy.",
+    "page": 4,
+    "clause": "2.2"
+  },
+  {
+    "text": "Daycare procedures that do not require 24-hour hospitalization are covered.",
+    "page": 5,
+    "clause": "3.1"
+  },
+  {
+    "text": "Outpatient consultations are not covered under this policy.",
+    "page": 6,
+    "clause": "3.2"
+  },
+  {
+    "text": "Surgery expenses are covered up to a maximum of ₹2,00,000.",
+    "page": 7,
+    "clause": "4.1"
+  },
+  {
+    "text": "Inpatient treatment costs including room rent and nursing are covered.",
+    "page": 8,
+    "clause": "4.2"
+  },
+  {
+    "text": "ICU charges are covered up to ₹5,000 per day.",
+    "page": 9,
+    "clause": "4.3"
+  },
+  {
+    "text": "Ambulance charges are reimbursed up to ₹2,000 per hospitalization.",
+    "page": 10,
+    "clause": "5.1"
+  },
+  {
+    "text": "Emergency hospitalization must be reported within 24 hours.",
+    "page": 11,
+    "clause": "5.2"
+  },
+  {
+    "text": "Pre-authorization is mandatory for planned hospital admissions.",
+    "page": 12,
+    "clause": "6.1"
+  },
+  {
+    "text": "Failure to obtain pre-authorization may result in claim rejection.",
+    "page": 13,
+    "clause": "6.2"
+  },
+  {
+    "text": "Claims exceeding ₹2,00,000 require manual verification and approval.",
+    "page": 14,
+    "clause": "7.1"
+  },
+  {
+    "text": "Cashless claims are processed only at network hospitals.",
+    "page": 15,
+    "clause": "7.2"
+  },
+  {
+    "text": "Cosmetic or aesthetic treatments are not covered.",
+    "page": 16,
+    "clause": "8.1"
+  },
+  {
+    "text": "Dental treatments are excluded unless due to accidental injury.",
+    "page": 17,
+    "clause": "8.2"
+  },
+  {
+    "text": "Mental health treatments are covered as per IRDAI guidelines.",
+    "page": 18,
+    "clause": "9.1"
+  },
+  {
+    "text": "Maternity expenses are covered after a waiting period of 9 months.",
+    "page": 19,
+    "clause": "9.2"
+  },
+  {
+    "text": "Newborn baby coverage starts after 90 days of birth.",
+    "page": 20,
+    "clause": "10.1"
+  },
+  {
+    "text": "Vaccination expenses are not covered under this policy.",
+    "page": 21,
+    "clause": "10.2"
+  },
+  {
+    "text": "Original medical bills and discharge summary must be submitted for reimbursement.",
+    "page": 22,
+    "clause": "11.1"
+  },
+  {
+    "text": "Incomplete documentation may lead to claim rejection.",
+    "page": 23,
+    "clause": "11.2"
+  },
+  {
+    "text": "Fraudulent claims will lead to policy termination.",
+    "page": 24,
+    "clause": "12.1"
+  },
+  {
+    "text": "Submitting false documents will result in blacklisting of the policyholder.",
+    "page": 25,
+    "clause": "12.2"
+  },
+  {
+    "text": "Motor insurance covers accidental damage to insured vehicles.",
+    "page": 26,
+    "clause": "13.1"
+  },
+  {
+    "text": "Damage caused due to natural disasters is covered.",
+    "page": 27,
+    "clause": "13.2"
+  },
+  {
+    "text": "Pre-existing vehicle damage is not covered under motor insurance.",
+    "page": 28,
+    "clause": "14.1"
+  },
+  {
+    "text": "Driving under the influence of alcohol voids the claim.",
+    "page": 29,
+    "clause": "14.2"
+  },
+  {
+    "text": "Third-party liability is covered up to ₹5,00,000.",
+    "page": 30,
+    "clause": "15.1"
+  },
+  {
+    "text": "Personal accident cover is provided to the driver.",
+    "page": 31,
+    "clause": "15.2"
+  },
+  {
+    "text": "Repair costs must be validated by authorized service centers.",
+    "page": 32,
+    "clause": "16.1"
+  },
+  {
+    "text": "Use of non-genuine spare parts may lead to claim rejection.",
+    "page": 33,
+    "clause": "16.2"
+  },
+  {
+    "text": "Theft claims must be reported to police within 24 hours.",
+    "page": 34,
+    "clause": "17.1"
+  },
+  {
+    "text": "Failure to submit FIR copy will result in rejection.",
+    "page": 35,
+    "clause": "17.2"
+  },
+  {
+    "text": "Claims involving intentional damage are not covered.",
+    "page": 36,
+    "clause": "18.1"
+  },
+  {
+    "text": "Wear and tear damage is excluded from coverage.",
+    "page": 37,
+    "clause": "18.2"
+  },
+  {
+    "text": "Policy renewal must be completed before expiry to maintain continuity benefits.",
+    "page": 38,
+    "clause": "19.1"
+  },
+  {
+    "text": "Grace period of 15 days is allowed for renewal.",
+    "page": 39,
+    "clause": "19.2"
+  },
+  {
+    "text": "Claims are settled within 7 working days after approval.",
+    "page": 40,
+    "clause": "20.1"
+  }
+]
