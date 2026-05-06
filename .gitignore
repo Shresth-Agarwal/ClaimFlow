@@ -42,3 +42,4 @@ logs/
 
 # DynamoDB Local (if you use it later for testing)
 shared-local-instance.db
+test.jpeg

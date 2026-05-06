@@ -1,3 +1,5 @@
+from base64 import b64decode
+from binascii import Error as Base64Error
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from backend.core.security import get_current_user, require_role
 from backend.services.identity_service import IdentityVerificationService
@@ -16,20 +18,44 @@ def verify_identity(document_data: dict, current_user: dict = Depends(get_curren
 
 @router.post("/verify-id-proof")
 async def verify_id_proof(
-    id_type: str = Form(...),
-    id_number: str = Form(...),
-    proof: UploadFile = File(...),
+    id_type: str | None = Form(None),
+    id_number: str | None = Form(None),
+    proof: UploadFile | None = File(None),
+    proof_base64: str | None = Form(None),
     current_user: dict = Depends(get_current_user),
 ):
     """Upload ID proof for an agent and verify with the future vision agent integration."""
     if current_user.get("role") != "agent":
         raise HTTPException(status_code=403, detail="Only agents can verify identity")
 
-    return await identity_service.verify_agent_with_id_proof(
+    if not id_type or not id_number:
+        raise HTTPException(status_code=400, detail="id_type and id_number are required")
+
+    if proof:
+        return await identity_service.verify_agent_with_id_proof(
+            current_user["id"],
+            id_type,
+            id_number,
+            proof,
+        )
+
+    if not proof_base64:
+        raise HTTPException(
+            status_code=400,
+            detail="Either proof file or proof_base64 must be provided",
+        )
+
+    try:
+        file_bytes = b64decode(proof_base64, validate=True)
+    except Base64Error:
+        raise HTTPException(status_code=400, detail="proof_base64 must be valid base64")
+
+    return await identity_service.verify_agent_with_id_proof_bytes(
         current_user["id"],
         id_type,
         id_number,
-        proof,
+        file_bytes,
+        "id_proof.png",
     )
 
 @router.get("/sensitive-data")
