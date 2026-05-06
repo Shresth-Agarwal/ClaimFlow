@@ -28,7 +28,7 @@ export default function HeroSection() {
           </span>
         </h1>
 
-        <p className="font-['Work_Sans'] text-[18px] leading-[1.6] text-[#43474e] max-w-2xl mx-auto">
+        <p className="font-['Work_Sans'] text-[18px] text-align:center leading-[1.6] text-[#43474e] max-w-2xl mx-auto">
           Compare plans from India's top insurers. Find the right coverage for your health, family,
           and assets in minutes with expert guidance.
         </p>

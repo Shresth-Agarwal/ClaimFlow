@@ -2,9 +2,11 @@
  * Left decorative brand column — shared between Login and Register pages.
  * Hidden on mobile, visible on lg+.
  */
-export default function BrandPanel({ quote, subtext, trustBadges = false }) {
+import ClaimFlowLogo from '../ui/ClaimFlowLogo';
+
+export default function BrandPanel({ quote, trustBadges = false }) {
   return (
-    <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-[#002045] items-end p-[80px]">
+    <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-[#002045] flex-col justify-end p-[80px]">
       {/* Abstract background image */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity"
@@ -16,30 +18,28 @@ export default function BrandPanel({ quote, subtext, trustBadges = false }) {
       {/* Gradient overlay */}
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#002045] via-[#002045cc] to-transparent" />
 
-      {/* Content */}
-      <div className="relative z-20 max-w-lg text-white">
-        <div className="flex items-center gap-3 mb-[24px]">
-          <span className="material-symbols-outlined text-4xl symbol-fill">
-            shield_person
-          </span>
-          <span className="font-['Be_Vietnam_Pro'] text-[48px] leading-[1.2] font-bold tracking-tight">
-            ClaimFlow
-          </span>
+      {/* Content — stacks vertically, takes full width of the panel */}
+      <div className="relative z-20 text-white">
+        {/* Logo row */}
+        <div className="flex items-center gap-3 mb-5">
+          <ClaimFlowLogo variant="dark" height={52} />
         </div>
-        <p className="font-['Work_Sans'] text-[18px] leading-[1.6] text-[#adc7f7] max-w-md">
+
+        {/* Tagline */}
+        <p className="font-['Work_Sans'] text-[18px] leading-[1.6] text-[#adc7f7]">
           {quote ||
             "Secure your future with India's most trusted insurance management platform. Intelligent coverage, simplified."}
         </p>
 
         {trustBadges && (
-          <div className="mt-[48px] flex gap-[24px] items-center opacity-80">
-            <div className="flex items-center gap-[4px]">
+          <div className="mt-8 flex gap-6 items-center opacity-80">
+            <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-[#fea619]">verified</span>
               <span className="font-['Work_Sans'] text-[14px] font-semibold text-white">
                 IRDAI Registered
               </span>
             </div>
-            <div className="flex items-center gap-[4px]">
+            <div className="flex items-center gap-1">
               <span className="material-symbols-outlined text-[#fea619]">support_agent</span>
               <span className="font-['Work_Sans'] text-[14px] font-semibold text-white">
                 24/7 Support

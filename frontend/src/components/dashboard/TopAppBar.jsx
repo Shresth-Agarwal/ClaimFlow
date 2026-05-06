@@ -1,7 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
+import ClaimFlowLogo from '../ui/ClaimFlowLogo';
 
-export default function TopAppBar() {
+const NAV_ITEMS = [
+  { label: 'Home', path: '/dashboard' },
+  { label: 'Product', path: '/products' },
+  { label: 'Advisors', path: '/advisors' },
+  { label: 'ChatBot', path: '/chatbot' },
+];
+
+export default function TopAppBar({ activePage = 'Home' }) {
   const navigate = useNavigate();
   const { user, logout } = useAuthContext();
 
@@ -11,32 +19,36 @@ export default function TopAppBar() {
   };
 
   return (
-    <header className="bg-white text-[#1a365d] font-['Be_Vietnam_Pro'] font-medium text-sm w-full sticky top-0 z-50 shadow-sm border-b border-slate-200">
+    <header className="bg-white text-[#1a365d] font-['Be_Vietnam_Pro'] font-medium text-sm w-full fixed top-0 left-0 right-0 z-50 shadow-sm border-b border-slate-200 h-16">
       <div className="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
         {/* Brand */}
         <a
           href="#"
-          className="text-2xl font-bold text-[#1a365d] tracking-tight flex items-center gap-2 hover:bg-slate-50 transition-colors rounded-lg p-1 active:scale-95 duration-200"
+          onClick={(e) => { e.preventDefault(); navigate('/dashboard'); }}
+          className="flex items-center hover:opacity-90 transition-opacity rounded-lg p-1 active:scale-95 duration-200"
         >
-          <span className="material-symbols-outlined icon-fill text-[#f59e0b]">verified_user</span>
-          ClaimFlow
+          <ClaimFlowLogo variant="full" height={36} />
         </a>
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {['Renew', 'Products', 'Advisors', 'Support'].map((item) => (
-            <a
-              key={item}
-              href="#"
-              className={`transition-colors active:scale-95 duration-200 px-3 py-2 rounded-md ${
-                item === 'Products'
-                  ? 'text-[#f59e0b] border-b-2 border-[#f59e0b] pb-1 font-bold'
-                  : 'text-slate-600 hover:text-[#1a365d] hover:bg-slate-50'
-              }`}
-            >
-              {item}
-            </a>
-          ))}
+          {NAV_ITEMS.map(({ label, path }) => {
+            const isActive = label === activePage;
+            return (
+              <a
+                key={label}
+                href="#"
+                onClick={path ? (e) => { e.preventDefault(); navigate(path); } : (e) => e.preventDefault()}
+                className={`transition-colors active:scale-95 duration-200 px-3 py-2 rounded-md ${
+                  isActive
+                    ? 'text-[#f59e0b] border-b-2 border-[#f59e0b] pb-1 font-bold'
+                    : 'text-slate-600 hover:text-[#1a365d] hover:bg-slate-50'
+                }`}
+              >
+                {label}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Actions */}
@@ -45,7 +57,6 @@ export default function TopAppBar() {
             <span className="material-symbols-outlined">search</span>
           </button>
 
-          {/* User info + logout */}
           {user ? (
             <div className="flex items-center gap-3">
               <span className="hidden sm:block text-sm text-slate-600 font-['Work_Sans']">

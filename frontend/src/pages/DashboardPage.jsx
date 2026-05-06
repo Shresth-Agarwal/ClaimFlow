@@ -11,7 +11,7 @@ export default function DashboardPage() {
     <div className="bg-[#f7f9fb] text-[#191c1e] min-h-screen flex flex-col">
       <TopAppBar />
 
-      <main className="flex-grow flex flex-col">
+      <main className="flex-grow flex flex-col pt-16">
         <HeroSection />
         <PartnerLogos />
         <CategoryGrid />
