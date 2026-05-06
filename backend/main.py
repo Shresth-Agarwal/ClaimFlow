@@ -1,7 +1,6 @@
 import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
-from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.routes import auth, users, agents
 from backend.core.exceptions import AppError
@@ -10,9 +9,9 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
-logger = logging.getLogger("auth_system")
+logger = logging.getLogger("claimflow")
 
-app = FastAPI(title="ClaimFlow Auth API")
+app = FastAPI(title="ClaimFlow API")
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 # allow_origins must be explicit (not "*") when allow_credentials=True
@@ -29,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Request logger ─────────────────────────────────────────────────────────────
+# ── Request logger ────────────────────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info(
@@ -53,9 +52,9 @@ async def preflight_handler(rest_of_path: str, request: Request):
     return Response(
         status_code=200,
         headers={
-            "Access-Control-Allow-Origin": origin,
-            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+            "Access-Control-Allow-Origin":      origin,
+            "Access-Control-Allow-Methods":     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers":     "Authorization, Content-Type, Accept",
             "Access-Control-Allow-Credentials": "true",
         },
     )
@@ -64,18 +63,12 @@ async def preflight_handler(rest_of_path: str, request: Request):
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(agents.router)
+# Uncomment both lines below when claims routes are ready:
+# from backend.api.routes.claims import router as claims_router, adjuster_router
+# app.include_router(claims_router)
+# app.include_router(adjuster_router)
 
 # ── Error handlers ────────────────────────────────────────────────────────────
-
-@app.exception_handler(RequestValidationError)
-async def validation_error_handler(request: Request, exc: RequestValidationError):
-    # Log the exact fields that failed so we can debug
-    logger.warning(f"422 Validation error on {request.url.path}: {exc.errors()}")
-    return JSONResponse(
-        status_code=422,
-        content={"detail": exc.errors()},
-    )
-
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
     logger.warning(f"AppError {exc.status_code}: {exc.message} on {request.url.path}")
@@ -89,6 +82,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "An internal server error occurred."},
     )
 
+# ── Startup ───────────────────────────────────────────────────────────────────
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Application started. Ready to handle requests.")
+    logger.info("ClaimFlow started. Ready to handle requests.")
