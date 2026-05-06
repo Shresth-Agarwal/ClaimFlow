@@ -3,7 +3,7 @@ import os
 import json
 
 # Ensure we can import from backend root when running directly
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from agents.policy_auditor import PolicyAuditor
 
