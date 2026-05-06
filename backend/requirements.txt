@@ -8,3 +8,5 @@ python-multipart
 pytesseract
 Pillow
 opencv-python
+langgraph
+boto3
