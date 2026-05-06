@@ -1,9 +1,14 @@
+/**
+ * DashboardFooter — light footer with compact logo.
+ */
+import ClaimFlowLogo from '../ui/ClaimFlowLogo';
+
 const LINKS = ['About Us', 'Privacy Policy', 'Terms & Conditions', 'Help Center', 'Contact Us', 'Careers'];
 
 export default function DashboardFooter() {
   return (
     <footer className="bg-slate-50 text-xs text-slate-500 border-t border-slate-200 w-full py-12 px-6 mt-auto flex flex-col items-center gap-6">
-      <div className="text-lg font-bold text-[#1a365d] font-['Be_Vietnam_Pro']">ClaimFlow</div>
+      <ClaimFlowLogo variant="compact" height={30} />
       <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
         {LINKS.map((link) => (
           <a

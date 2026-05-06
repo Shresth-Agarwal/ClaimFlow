@@ -63,6 +63,10 @@ async def preflight_handler(rest_of_path: str, request: Request):
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(agents.router)
+from backend.api.routes.products import router as products_router
+app.include_router(products_router)
+from backend.api.routes.advisors import router as advisors_router
+app.include_router(advisors_router)
 # Uncomment both lines below when claims routes are ready:
 # from backend.api.routes.claims import router as claims_router, adjuster_router
 # app.include_router(claims_router)

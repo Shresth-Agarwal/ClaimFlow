@@ -153,3 +153,66 @@ export async function getAgentSensitiveData(token) {
 export async function getAgentProfile(token) {
   return request('GET', '/agents/profile', null, token);
 }
+
+// ─── Products Endpoints ────────────────────────────────────────────────────────
+
+/**
+ * GET /products
+ * Returns the full list of available insurance products / domains.
+ * Public endpoint — no auth required.
+ * @returns {{ products: Array<{ id: string, name: string, category: string, description: string }> }}
+ */
+export async function getInsuranceProducts() {
+  return request('GET', '/products');
+}
+
+/**
+ * POST /products/recommend
+ * AI-driven plan recommendation based on the user's claim context.
+ * Requires authenticated user.
+ *
+ * @param {{
+ *   policy_type: string,
+ *   policy_number: string,
+ *   insured_amount: number,
+ *   message_count: number
+ * }} payload
+ * @param {string} token
+ * @returns {{ recommended_plan: string, premium_estimate: string, reasoning: string }}
+ */
+export async function getProductRecommendation(payload, token) {
+  return request('POST', '/products/recommend', payload, token);
+}
+
+// ─── Advisors Endpoints ────────────────────────────────────────────────────────
+
+/**
+ * GET /advisors
+ * Returns the list of available expert advisors.
+ * Requires authenticated user.
+ * @param {string} token
+ * @returns {{ advisors: Array<{ id, name, specialty, badge, badgeIcon, photo }> }}
+ */
+export async function getAdvisors(token) {
+  return request('GET', '/advisors', null, token);
+}
+
+/**
+ * POST /advisors/book
+ * Book a consultation with a specific advisor.
+ * Requires authenticated user.
+ *
+ * @param {{
+ *   advisor_id: number,
+ *   advisor_name: string,
+ *   specialty: string,
+ *   policy_type: string | null,
+ *   policy_number: string | null,
+ *   recommended_plan: string | null
+ * }} payload
+ * @param {string} token
+ * @returns {{ booking_id: string, status: string, message: string }}
+ */
+export async function bookAdvisorConsultation(payload, token) {
+  return request('POST', '/advisors/book', payload, token);
+}
