@@ -128,3 +128,91 @@ class DynamoUserRepository(IUserRepository):
         except self.table.meta.client.exceptions.ConditionalCheckFailedException:
             logger.warning(f"update_verification_status: user id={user_id} not found")
             return False
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLAIMS TABLE — separate table, separate boto3 resource
+# ─────────────────────────────────────────────────────────────────────────────
+
+CLAIMS_TABLE_NAME = os.getenv("DYNAMODB_CLAIMS_TABLE", "claimflow-claims")
+
+_boto_kwargs = dict(
+    region_name           = AWS_REGION,
+    aws_access_key_id     = AWS_KEY,
+    aws_secret_access_key = AWS_SECRET,
+    aws_session_token     = AWS_SESSION,
+)
+
+def _get_claims_table():
+    dynamodb = boto3.resource("dynamodb", **_boto_kwargs)
+    return dynamodb.Table(CLAIMS_TABLE_NAME)
+
+
+async def save_claim(item: dict) -> None:
+    """Write the initial claim record when a claim is first submitted."""
+    try:
+        table = _get_claims_table()
+        table.put_item(Item=item)
+        logger.info(f"save_claim: {item.get('claim_id')}")
+    except Exception as e:
+        logger.error(f"save_claim failed: {e}", exc_info=True)
+        raise
+
+
+async def get_claim(claim_id: str) -> Optional[dict]:
+    """Fetch a single claim by claim_id."""
+    try:
+        table    = _get_claims_table()
+        response = table.get_item(Key={"claim_id": claim_id})
+        return response.get("Item")
+    except Exception as e:
+        logger.error(f"get_claim failed for {claim_id}: {e}", exc_info=True)
+        return None
+
+
+async def update_claim(claim_id: str, updates: dict) -> None:
+    """
+    Patch specific fields on an existing claim item.
+    Only updates the keys present in `updates` — leaves everything else untouched.
+    """
+    if not updates:
+        return
+    try:
+        table = _get_claims_table()
+
+        expr_parts  = []
+        attr_names  = {}
+        attr_values = {}
+
+        for i, (key, value) in enumerate(updates.items()):
+            placeholder_name  = f"#k{i}"
+            placeholder_value = f":v{i}"
+            expr_parts.append(f"{placeholder_name} = {placeholder_value}")
+            attr_names[placeholder_name]  = key
+            attr_values[placeholder_value] = value
+
+        update_expr = "SET " + ", ".join(expr_parts)
+
+        table.update_item(
+            Key={"claim_id": claim_id},
+            UpdateExpression=update_expr,
+            ExpressionAttributeNames=attr_names,
+            ExpressionAttributeValues=attr_values,
+        )
+        logger.info(f"update_claim: {claim_id} — fields: {list(updates.keys())}")
+    except Exception as e:
+        logger.error(f"update_claim failed for {claim_id}: {e}", exc_info=True)
+        raise
+
+
+async def get_claims_by_status(status: str) -> list:
+    """Scan for all claims with a given status. Used for adjuster queue."""
+    try:
+        table    = _get_claims_table()
+        response = table.scan(
+            FilterExpression=Attr("status").eq(status)
+        )
+        return response.get("Items", [])
+    except Exception as e:
+        logger.error(f"get_claims_by_status failed for status={status}: {e}", exc_info=True)
+        return []
