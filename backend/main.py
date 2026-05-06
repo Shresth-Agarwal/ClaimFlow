@@ -1,21 +1,19 @@
 import logging
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.responses import JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.routes import auth, users, agents
 from backend.core.exceptions import AppError
 
-# Configure centralized logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger("auth_system")
 
-app = FastAPI(title="Role-Based Auth System (DynamoDB Ready)")
+app = FastAPI(title="ClaimFlow Auth API")
 
+# ── CORS ──────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,38 +22,56 @@ app.add_middleware(
     allow_credentials=True
 )
 
-# Include all modular routers
+# ── Request logger — logs every incoming request with headers ─────────────────
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(
+        f">>> {request.method} {request.url.path} | "
+        f"Origin: {request.headers.get('origin', 'none')} | "
+        f"Content-Type: {request.headers.get('content-type', 'none')}"
+    )
+    response = await call_next(request)
+    logger.info(
+        f"<<< {request.method} {request.url.path} | "
+        f"Status: {response.status_code} | "
+        f"ACAO: {response.headers.get('access-control-allow-origin', 'MISSING')}"
+    )
+    return response
+
+# ── Catch-all OPTIONS handler — guarantees preflight always returns 200 ───────
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str, request: Request):
+    origin = request.headers.get("origin", "")
+    logger.info(f"OPTIONS preflight hit: /{rest_of_path} from origin: {origin}")
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+            "Access-Control-Allow-Credentials": "true",
+        },
+    )
+
+# ── Routers ───────────────────────────────────────────────────────────────────
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(agents.router)
 
-# Custom Application Error Handler
+# ── Error handlers ────────────────────────────────────────────────────────────
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
-    logger.warning(f"Application Error: {exc.message} on path {request.url.path}")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.message},
-    )
+    logger.warning(f"AppError {exc.status_code}: {exc.message} on {request.url.path}")
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.message})
 
-# Standard HTTP Exception Handler Logging
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    logger.warning(f"HTTP Exception {exc.status_code}: {exc.detail} on path {request.url.path}")
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.detail},
-    )
-
-# Fallback Global Exception Handler (Catches 500s)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error(f"Unhandled Exception on path {request.url.path}: {str(exc)}", exc_info=True)
+    logger.error(f"Unhandled error on {request.url.path}: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
-        content={"detail": "An internal server error occurred. Please try again later."},
+        content={"detail": "An internal server error occurred."},
     )
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("Application started successfully. Ready to handle requests.")
+    logger.info("Application started. Ready to handle requests.")
