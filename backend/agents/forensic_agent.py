@@ -61,6 +61,7 @@ def _run_deterministic_analysis(prompt: str) -> str:
 
     vision_output = context.get("vision_output") or {}
     processed_evidences = context.get("processed_evidences") or []
+    historical_claim_signals = context.get("historical_claim_signals") or {}
 
     domain = (vision_output.get("domain") or "").lower() or "unknown"
     document_type = (vision_output.get("document_type") or "").lower() or (vision_output.get("structured_data") or {}).get(
@@ -305,6 +306,26 @@ def _run_deterministic_analysis(prompt: str) -> str:
     except Exception:
         _reduce(0.03, "Cross-evidence duplicate validation failed; continuing.", "summary")
 
+    # -----------------------
+    # Historical signal checks (optional external input)
+    # -----------------------
+    try:
+        historical_result = analyze_historical_claim_patterns(historical_claim_signals)
+        hist_penalty = float(historical_result.get("risk_penalty") or 0.0)
+        if hist_penalty > 0:
+            _reduce(hist_penalty, "Historical cross-claim risk signals increased review risk.", "consistency")
+        for item in historical_result.get("suspicious_indicators") or []:
+            if item not in suspicious_indicators:
+                suspicious_indicators.append(item)
+        for item in historical_result.get("analysis_summary") or []:
+            if item not in analysis_summary:
+                analysis_summary.append(item)
+        for item in historical_result.get("consistency_checks") or []:
+            if item not in consistency_checks:
+                consistency_checks.append(item)
+    except Exception:
+        _reduce(0.02, "Historical signal interpretation failed; continued with standard risk checks.", "summary")
+
     claim_confidence = max(0.0, min(1.0, float(claim_confidence)))
     if claim_confidence >= 0.8:
         risk_level = "low"
@@ -322,6 +343,18 @@ def _run_deterministic_analysis(prompt: str) -> str:
     damage_assessment = build_damage_assessment(
         domain, structured_data, visual_indicators, claim_confidence, suspicious_indicators, consistency_checks
     )
+    manual_review_recommended = build_manual_review_recommendation(
+        risk_level, suspicious_indicators, historical_result if "historical_result" in locals() else {}
+    )
+    simple_summary = simplify_assessment_output(
+        risk_level,
+        manual_review_recommended,
+        claim_confidence,
+        damage_assessment,
+        consistency_checks,
+        suspicious_indicators,
+        analysis_summary,
+    )
 
     return json.dumps(
         {
@@ -338,6 +371,8 @@ def _run_deterministic_analysis(prompt: str) -> str:
             "verdict": legacy_verdict,
             "reason": legacy_reason,
             "damage_assessment": damage_assessment,
+            "manual_review_recommended": manual_review_recommended,
+            "simple_summary": simple_summary,
         }
     )
 
@@ -345,6 +380,152 @@ def _run_deterministic_analysis(prompt: str) -> str:
 def _invoke_mock_model(prompt: str) -> str:
     # Backward-compatible alias used by existing flow.
     return _run_deterministic_analysis(prompt)
+
+
+def evaluate_claim_frequency_risk(signals: dict) -> tuple[float, list[str], list[str]]:
+    score = 0.0
+    suspicious: list[str] = []
+    summary: list[str] = []
+
+    prev_count = int(signals.get("previous_claim_count") or 0)
+    recent_30 = int(signals.get("claims_last_30_days") or 0)
+    policy_age_days = int(signals.get("policy_age_days") or 0)
+
+    if prev_count >= 4:
+        score += 0.18
+        suspicious.append("High historical claim count observed for this claimant/policy context.")
+    if recent_30 >= 3:
+        score += 0.24
+        suspicious.append("Elevated short-term claim frequency detected in last 30 days.")
+    if policy_age_days > 0 and policy_age_days <= 60 and recent_30 >= 1:
+        score += 0.16
+        suspicious.append("Early policy-period claims detected; requires extra scrutiny.")
+    if recent_30 > 0:
+        summary.append("Historical timing pattern reviewed for recent claim frequency.")
+
+    return min(0.5, score), suspicious, summary
+
+
+def detect_repeat_claim_signals(signals: dict) -> tuple[float, list[str], list[str]]:
+    score = 0.0
+    suspicious: list[str] = []
+    summary: list[str] = []
+
+    same_hospital_frequency = int(signals.get("same_hospital_frequency") or 0)
+    same_vehicle_claims = int(signals.get("same_vehicle_claims") or 0)
+
+    if bool(signals.get("duplicate_document_match")):
+        score += 0.22
+        suspicious.append("Potential duplicate document reuse across claims detected.")
+    if bool(signals.get("duplicate_image_match")):
+        score += 0.24
+        suspicious.append("Potential duplicate image reuse across claims detected.")
+    if same_hospital_frequency >= 10:
+        score += 0.1
+        suspicious.append("Repeated claims linked to the same hospital/provider pattern.")
+    if same_vehicle_claims >= 3:
+        score += 0.12
+        suspicious.append("Multiple claims associated with the same vehicle context.")
+    if bool(signals.get("multiple_insurer_claims")):
+        score += 0.2
+        suspicious.append("Signals indicate possible multi-insurer claim overlap.")
+    if bool(signals.get("rapid_claim_spike")):
+        score += 0.18
+        suspicious.append("Rapid claim spike signal detected in recent history.")
+
+    if suspicious:
+        summary.append("Cross-claim pattern signals were detected and risk-adjusted.")
+    return min(0.6, score), suspicious, summary
+
+
+def analyze_historical_claim_patterns(historical_claim_signals: dict | None) -> dict:
+    signals = historical_claim_signals or {}
+    if not isinstance(signals, dict) or not signals:
+        return {
+            "risk_penalty": 0.0,
+            "suspicious_indicators": [],
+            "analysis_summary": [],
+            "consistency_checks": [],
+            "manual_review_recommended": False,
+        }
+
+    freq_score, freq_suspicious, freq_summary = evaluate_claim_frequency_risk(signals)
+    repeat_score, repeat_suspicious, repeat_summary = detect_repeat_claim_signals(signals)
+    total_risk = min(0.75, freq_score + repeat_score)
+
+    consistency_checks: list[str] = []
+    if total_risk >= 0.25:
+        consistency_checks.append("Historical claim-risk signals indicate elevated review complexity.")
+    if bool(signals.get("policy_age_days")) and int(signals.get("policy_age_days") or 0) <= 60:
+        consistency_checks.append("Policy age is relatively new; early-claim behavior considered in risk analysis.")
+
+    return {
+        "risk_penalty": total_risk,
+        "suspicious_indicators": freq_suspicious + repeat_suspicious,
+        "analysis_summary": freq_summary + repeat_summary,
+        "consistency_checks": consistency_checks,
+        "manual_review_recommended": total_risk >= 0.35 or bool(signals.get("duplicate_image_match")),
+    }
+
+
+def build_manual_review_recommendation(
+    risk_level: str, suspicious_indicators: list[str], historical_pattern_result: dict
+) -> bool:
+    if historical_pattern_result.get("manual_review_recommended"):
+        return True
+    if risk_level == "high":
+        return True
+    if len(suspicious_indicators or []) >= 3:
+        return True
+    return False
+
+
+def generate_claim_status(risk_level: str, manual_review: bool, claim_confidence: float) -> str:
+    rl = (risk_level or "").lower()
+    conf = float(claim_confidence or 0.0)
+    if rl == "high":
+        return "High Risk" if not manual_review else "Under Investigation"
+    if manual_review:
+        return "Needs Manual Review"
+    if rl == "moderate":
+        return "Partially Verified" if conf >= 0.5 else "Needs Manual Review"
+    return "Approved"
+
+
+def build_simple_claim_summary(
+    consistency_checks: list[str], suspicious_indicators: list[str], analysis_summary: list[str], limit: int = 3
+) -> list[str]:
+    out: list[str] = []
+    for group in (analysis_summary or [], consistency_checks or [], suspicious_indicators or []):
+        for src in group:
+            if not isinstance(src, str):
+                continue
+            text = src.strip()
+            if not text or text in out:
+                continue
+            out.append(text)
+            if len(out) >= limit:
+                return out
+    return out
+
+
+def simplify_assessment_output(
+    risk_level: str,
+    manual_review_recommended: bool,
+    claim_confidence: float,
+    damage_assessment: dict,
+    consistency_checks: list[str],
+    suspicious_indicators: list[str],
+    analysis_summary: list[str],
+) -> dict:
+    estimated_payout = float((damage_assessment or {}).get("recommended_settlement") or 0.0)
+    return {
+        "claim_status": generate_claim_status(risk_level, manual_review_recommended, claim_confidence),
+        "estimated_payout": round(max(0.0, estimated_payout), 2),
+        "risk_level": (risk_level or "moderate").capitalize(),
+        "manual_review": bool(manual_review_recommended),
+        "summary": build_simple_claim_summary(consistency_checks, suspicious_indicators, analysis_summary),
+    }
 
 
 def estimate_damage_cost(
@@ -635,6 +816,18 @@ def _merge_reasoning(deterministic: dict, reasoning: dict) -> dict:
     merged["verdict"] = "suspicious" if risk_level == "high" else "valid"
     merged["reason"] = "; ".join(summary[:3]) if summary else "No strong risk indicators detected."
     merged["damage_assessment"] = merge_estimation_reasoning(merged.get("damage_assessment") or {}, reasoning or {})
+    merged["manual_review_recommended"] = build_manual_review_recommendation(
+        risk_level, suspicious, {"manual_review_recommended": bool(merged.get("manual_review_recommended"))}
+    )
+    merged["simple_summary"] = simplify_assessment_output(
+        risk_level,
+        bool(merged.get("manual_review_recommended")),
+        claim_confidence,
+        merged.get("damage_assessment") or {},
+        consistency,
+        suspicious,
+        summary,
+    )
     return merged
 
 
@@ -740,6 +933,8 @@ async def run(input: dict) -> dict:
                 "analysis_summary",
                 "confidence",
                 "damage_assessment",
+                "manual_review_recommended",
+                "simple_summary",
             }
             if not required.issubset(data.keys()):
                 missing = sorted(required - set(data.keys()))
@@ -747,7 +942,11 @@ async def run(input: dict) -> dict:
 
         def _invoke_model() -> tuple[dict, bool, bool]:
             # Step 1: deterministic baseline (always available).
-            context = {"vision_output": vision_output, "processed_evidences": processed_evidences}
+            context = {
+                "vision_output": vision_output,
+                "processed_evidences": processed_evidences,
+                "historical_claim_signals": input.get("historical_claim_signals") or {},
+            }
             deterministic_text = _run_deterministic_analysis(f"{json.dumps(context)}\n{FORENSIC_PROMPT}")
             deterministic_data = _extract_json_dict(deterministic_text)
             _validate_required_keys(deterministic_data)
@@ -828,6 +1027,7 @@ async def run(input: dict) -> dict:
             "consistency_checks": ["Fallback response due to invalid model JSON output."],
             "suspicious_indicators": [],
             "analysis_summary": ["Fallback response due to invalid model JSON output."],
+            "manual_review_recommended": True,
             "damage_assessment": {
                 "severity": "unknown",
                 "estimated_damage_cost": 0.0,
@@ -835,6 +1035,13 @@ async def run(input: dict) -> dict:
                 "payout_confidence": 0.0,
                 "inflation_risk": "unknown",
                 "assessment_notes": ["Fallback assessment due to invalid model JSON output."],
+            },
+            "simple_summary": {
+                "claim_status": "Under Investigation",
+                "estimated_payout": 0.0,
+                "risk_level": "High",
+                "manual_review": True,
+                "summary": ["Fallback response generated due to processing/parsing issue."],
             },
         }
         return {
@@ -872,6 +1079,7 @@ async def run(input: dict) -> dict:
 
 if __name__ == "__main__":
     import asyncio
+    from pprint import pprint
 
     test_input = {
         "vision_output": {
@@ -896,5 +1104,9 @@ if __name__ == "__main__":
 
     result = asyncio.run(run(test_input))
 
-    print("\n=== FORENSIC OUTPUT ===")
-    print(result)
+    print("\n=== FORENSIC DISPLAY OUTPUT ===")
+    simple = (result.get("data") or {}).get("simple_summary") if isinstance(result, dict) else None
+    if simple:
+        pprint(simple)
+    else:
+        print({"claim_status": "Unavailable", "summary": ["No simplified summary available."]})
