@@ -4,6 +4,8 @@ from fastapi.responses import JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.routes import auth, users, agents
 from backend.core.exceptions import AppError
+from backend.api.routes.claims import router as claims_router, adjuster_router
+from backend.api.routes.chat import router as chat_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +24,8 @@ app.add_middleware(
         "http://localhost:5174",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
+        "http://127.0.0.1:8000",  # Added for local development
+        "http://localhost:8000",   # Added for local development
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -63,10 +67,9 @@ async def preflight_handler(rest_of_path: str, request: Request):
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(agents.router)
-# Uncomment both lines below when claims routes are ready:
-# from backend.api.routes.claims import router as claims_router, adjuster_router
-# app.include_router(claims_router)
-# app.include_router(adjuster_router)
+app.include_router(claims_router)
+app.include_router(adjuster_router)
+app.include_router(chat_router)
 
 # ── Error handlers ────────────────────────────────────────────────────────────
 @app.exception_handler(AppError)
