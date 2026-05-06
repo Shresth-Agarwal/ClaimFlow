@@ -10,3 +10,7 @@ Pillow
 opencv-python
 langgraph
 boto3
+reportlab
+PyMuPDF
+numpy
+asyncio
