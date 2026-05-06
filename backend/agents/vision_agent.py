@@ -9,15 +9,18 @@ import traceback
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import urlopen
-
+from dotenv import load_dotenv
 import pytesseract
 import cv2
+
+load_dotenv()
+
 try:
     boto3 = __import__("boto3")
 except Exception:  # pragma: no cover - optional at runtime
     boto3 = None
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_PATH", "tesseract")
 
 
 USE_MOCK = True
