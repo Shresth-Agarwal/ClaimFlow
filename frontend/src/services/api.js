@@ -154,6 +154,58 @@ export async function getAgentProfile(token) {
   return request('GET', '/agents/profile', null, token);
 }
 
+// ─── Chat Endpoints ────────────────────────────────────────────────────────────
+
+/**
+ * POST /api/chat/message  — text-only turn
+ * @param {{ message: string, session_id?: string }} payload
+ * @param {string} token
+ */
+export async function sendChatMessage(payload, token) {
+  return request('POST', '/api/chat/message', payload, token);
+}
+
+/**
+ * POST /api/chat/multimodal  — text + files + audio
+ * @param {{ message?: string, session_id?: string, files?: File[], audio?: Blob }} payload
+ * @param {string} token
+ */
+export async function sendMultimodalMessage(payload, token) {
+  const form = new FormData();
+  if (payload.message)    form.append('message',    payload.message);
+  if (payload.session_id) form.append('session_id', payload.session_id);
+  if (payload.files)      payload.files.forEach((f) => form.append('files', f));
+  if (payload.audio)      form.append('audio', payload.audio, 'voice.webm');
+  return requestForm('POST', '/api/chat/multimodal', form, token);
+}
+
+/**
+ * GET /api/chat/{session_id}/history
+ * @param {string} sessionId
+ * @param {string} token
+ */
+export async function getChatHistory(sessionId, token) {
+  return request('GET', `/api/chat/${sessionId}/history`, null, token);
+}
+
+/**
+ * GET /api/chat/{session_id}/summary  — generate / retrieve summary report
+ * @param {string} sessionId
+ * @param {string} token
+ */
+export async function getChatSummary(sessionId, token) {
+  return request('GET', `/api/chat/${sessionId}/summary`, null, token);
+}
+
+/**
+ * DELETE /api/chat/{session_id}
+ * @param {string} sessionId
+ * @param {string} token
+ */
+export async function clearChatSession(sessionId, token) {
+  return request('DELETE', `/api/chat/${sessionId}`, null, token);
+}
+
 // ─── Products Endpoints ────────────────────────────────────────────────────────
 
 /**
