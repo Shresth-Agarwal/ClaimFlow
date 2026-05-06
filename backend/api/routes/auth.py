@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from backend.api.schemas import UserRegisterDto, UserLoginDto, UserResponse, LoginResponse
 from backend.services.auth_service import AuthService
-from backend.database.mock_db import db
+from backend.database.db import db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 auth_service = AuthService(db)

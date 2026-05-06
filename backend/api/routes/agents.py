@@ -3,7 +3,7 @@ from binascii import Error as Base64Error
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from backend.core.security import get_current_user, require_role
 from backend.services.identity_service import IdentityVerificationService
-from backend.database.mock_db import db
+from backend.database.db import db
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 identity_service = IdentityVerificationService(db)
