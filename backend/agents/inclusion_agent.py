@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 def query_bedrock_kb(query: str) -> dict:
     try:
         # Read KB ID from kb_config.json
-        config_path = os.path.join(os.path.dirname(__file__), '..', 'kb_config.json')
+        config_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'kb_config.json')
         with open(config_path) as f:
             kb_config = json.load(f)
         
@@ -50,7 +50,7 @@ def query_bedrock_kb(query: str) -> dict:
         # Fallback to local retrieval if Bedrock fails
         from core.local_retrieval import local_retrieve
         from core.local_generator import local_generate
-        kb_path = os.path.join(os.path.dirname(__file__), '..', 'insurance_kb.json')
+        kb_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'insurance_kb.json')
         try:
             with open(kb_path, 'r', encoding='utf-8') as f:
                 kb = json.load(f)
