@@ -2,10 +2,15 @@ import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 
 /**
- * Wraps a route and redirects to "/" if no token is present.
+ * Protects routes for "user" role only.
+ * - No token → /
+ * - agent role → /agent
+ * - admin role → /admin
  */
 export default function ProtectedRoute({ children }) {
-  const { token } = useAuthContext();
+  const { token, user } = useAuthContext();
   if (!token) return <Navigate to="/" replace />;
+  if (user?.role === 'agent') return <Navigate to="/agent" replace />;
+  if (user?.role === 'admin') return <Navigate to="/admin" replace />;
   return children;
 }

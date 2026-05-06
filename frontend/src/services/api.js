@@ -126,12 +126,13 @@ export async function verifyAgent(token) {
 /**
  * POST /agents/verify-id-proof
  * Requires "agent" role.
+ * Backend expects: proof (file), id_type (form), id_number (form)
  * @param {{ file: File, id_type: string, id_number: string }} data
  * @param {string} token
  */
 export async function verifyAgentIdProof(data, token) {
   const formData = new FormData();
-  formData.append('file', data.file);
+  formData.append('proof', data.file);        // backend field name is 'proof'
   formData.append('id_type', data.id_type);
   formData.append('id_number', data.id_number);
   return requestForm('POST', '/agents/verify-id-proof', formData, token);

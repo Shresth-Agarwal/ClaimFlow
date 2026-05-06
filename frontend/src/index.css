@@ -100,3 +100,47 @@ body {
 .ambient-shadow {
   box-shadow: 0px 4px 20px rgba(26, 54, 93, 0.05);
 }
+
+.shadow-ambient {
+  box-shadow: 0px 4px 20px rgba(26, 54, 93, 0.05);
+}
+
+.shadow-ambient-hover {
+  box-shadow: 0px 10px 30px rgba(26, 54, 93, 0.12);
+}
+
+.icon-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.hero-pattern {
+  background-color: #f7f9fb;
+  background-image: radial-gradient(#d6e3ff 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.scroll-container {
+  display: flex;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+}
+
+.scroll-container:hover {
+  animation-play-state: paused;
+}
+
+.logo-item {
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.logo-item:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}

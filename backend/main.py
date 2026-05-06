@@ -1,6 +1,7 @@
 import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from backend.api.routes import auth, users, agents
 from backend.core.exceptions import AppError
@@ -14,15 +15,21 @@ logger = logging.getLogger("auth_system")
 app = FastAPI(title="ClaimFlow Auth API")
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
+# allow_origins must be explicit (not "*") when allow_credentials=True
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True
 )
 
-# ── Request logger — logs every incoming request with headers ─────────────────
+# ── Request logger ─────────────────────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info(
@@ -38,11 +45,11 @@ async def log_requests(request: Request, call_next):
     )
     return response
 
-# ── Catch-all OPTIONS handler — guarantees preflight always returns 200 ───────
+# ── Catch-all OPTIONS — guarantees preflight always returns 200 ───────────────
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str, request: Request):
     origin = request.headers.get("origin", "")
-    logger.info(f"OPTIONS preflight hit: /{rest_of_path} from origin: {origin}")
+    logger.info(f"OPTIONS preflight: /{rest_of_path} from {origin}")
     return Response(
         status_code=200,
         headers={
@@ -59,6 +66,16 @@ app.include_router(users.router)
 app.include_router(agents.router)
 
 # ── Error handlers ────────────────────────────────────────────────────────────
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request: Request, exc: RequestValidationError):
+    # Log the exact fields that failed so we can debug
+    logger.warning(f"422 Validation error on {request.url.path}: {exc.errors()}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()},
+    )
+
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
     logger.warning(f"AppError {exc.status_code}: {exc.message} on {request.url.path}")

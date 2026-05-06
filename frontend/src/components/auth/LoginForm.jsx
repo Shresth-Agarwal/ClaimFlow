@@ -17,8 +17,10 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const user = await handleLogin({ email: identifier, password });
-      // Role-based redirect — admin goes to /admin, everyone else to /dashboard
-      navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
+      // Role-based redirect
+      if (user?.role === 'admin') navigate('/admin');
+      else if (user?.role === 'agent') navigate('/agent');
+      else navigate('/dashboard');
     } catch {
       // error is already set in the hook
     }

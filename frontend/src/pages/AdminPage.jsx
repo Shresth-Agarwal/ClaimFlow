@@ -1,130 +1,99 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
-import { useProfile } from '../hooks/useProfile';
+import Sidebar from '../components/admin/Sidebar';
+import MetricCard from '../components/admin/MetricCard';
+import TopPlansTable from '../components/admin/TopPlansTable';
+
+const METRICS = [
+  {
+    label: 'Total Users',
+    value: '45,231',
+    icon: 'group',
+    iconBg: 'bg-[#d6e3ff]',
+    iconColor: 'text-[#002045]',
+    blobBg: 'bg-[#d6e3ff]/20',
+    trend: '+12.5%',
+    trendLabel: 'vs last month',
+  },
+  {
+    label: 'Total Policies',
+    value: '12,845',
+    icon: 'policy',
+    iconBg: 'bg-[#d2e4ff]',
+    iconColor: 'text-[#00213e]',
+    blobBg: 'bg-[#d2e4ff]/20',
+    trend: '+8.2%',
+    trendLabel: 'vs last month',
+  },
+  {
+    label: 'Total Revenue',
+    value: '₹2.4M',
+    icon: 'payments',
+    iconBg: 'bg-[#ffddb8]',
+    iconColor: 'text-[#855300]',
+    blobBg: 'bg-[#ffddb8]/20',
+    trend: '+24.1%',
+    trendLabel: 'vs last month',
+  },
+  {
+    label: 'Active Claims',
+    value: '843',
+    icon: 'assignment_late',
+    iconBg: 'bg-[#ffdad6]',
+    iconColor: 'text-[#ba1a1a]',
+    blobBg: 'bg-[#ffdad6]/20',
+    trend: '-2.4%',
+    trendLabel: 'vs last month',
+  },
+];
 
 export default function AdminPage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuthContext();
-  const { profile, loading, error } = useProfile();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f7f9fb]">
-        <div className="flex flex-col items-center gap-4 text-[#43474e]">
-          <span className="material-symbols-outlined text-5xl animate-spin text-[#002045]">
-            progress_activity
-          </span>
-          <p className="font-['Work_Sans'] text-[16px]">Loading admin panel…</p>
-        </div>
-      </div>
-    );
-  }
+  const { user } = useAuthContext();
 
   return (
-    <div className="min-h-screen bg-[#f7f9fb] antialiased">
-      {/* Top nav */}
-      <header className="bg-[#002045] px-[24px] py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-white">
-          <span className="material-symbols-outlined symbol-fill text-2xl text-[#fea619]">
-            shield_person
-          </span>
-          <span className="font-['Be_Vietnam_Pro'] text-[24px] font-semibold tracking-tight text-white">
-            ClaimFlow
-          </span>
-          <span className="ml-3 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#fea619] text-[#684000] uppercase tracking-wider">
-            Admin
-          </span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="font-['Work_Sans'] text-[14px] text-[#adc7f7]">
-            {profile?.username || user?.username || user?.email}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1 text-[14px] font-['Work_Sans'] text-[#adc7f7] hover:text-white transition-colors"
-          >
-            <span className="material-symbols-outlined text-[18px]">logout</span>
-            Logout
-          </button>
-        </div>
-      </header>
+    <div className="bg-[#f7f9fb] text-[#191c1e] min-h-screen flex font-['Work_Sans']">
+      <Sidebar />
 
-      <main className="max-w-5xl mx-auto px-[24px] py-[48px]">
-        {error && (
-          <div className="mb-6 p-4 rounded-lg bg-[#ffdad6] text-[#93000a] font-['Work_Sans'] text-[14px]">
-            {error}
+      {/* Main content — offset by sidebar width on md+ */}
+      <main className="flex-1 ml-0 md:ml-64 p-[24px] pt-8">
+        {/* Header */}
+        <div className="mb-[48px] flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+          <div>
+            <h1 className="font-['Be_Vietnam_Pro'] text-[32px] leading-[1.3] font-semibold text-[#1a365d] mb-2">
+              Dashboard Overview
+            </h1>
+            <p className="font-['Work_Sans'] text-[16px] leading-[1.5] text-[#43474e]">
+              Welcome back,{' '}
+              <span className="font-semibold text-[#1a365d]">
+                {user?.email || 'Admin'}
+              </span>
+              . Here is the daily summary of operations.
+            </p>
           </div>
-        )}
-
-        {/* Welcome banner */}
-        <div className="bg-[#002045] rounded-xl p-[32px] mb-6 text-white">
-          <h1 className="font-['Be_Vietnam_Pro'] text-[32px] font-semibold mb-2">
-            Admin Dashboard
-          </h1>
-          <p className="font-['Work_Sans'] text-[16px] text-[#adc7f7]">
-            Welcome back,{' '}
-            <span className="text-white font-semibold">
-              {profile?.username || user?.username || 'Admin'}
+          <div className="flex items-center gap-3">
+            <div className="bg-[#e0e3e5] rounded-full p-2 text-[#1a365d]">
+              <span className="material-symbols-outlined">calendar_today</span>
+            </div>
+            <span className="font-['Work_Sans'] font-semibold text-[14px] text-[#191c1e]">
+              {new Date().toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })}
             </span>
-            . You have full administrative access.
-          </p>
+          </div>
         </div>
 
-        {/* Stats row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          {[
-            { label: 'Total Users', icon: 'group', value: '—' },
-            { label: 'Active Agents', icon: 'support_agent', value: '—' },
-            { label: 'Pending Claims', icon: 'pending_actions', value: '—' },
-          ].map(({ label, icon, value }) => (
-            <div
-              key={label}
-              className="bg-white rounded-xl border border-[#e0e3e5] p-[24px] flex items-center gap-4 shadow-[0px_4px_20px_rgba(26,54,93,0.05)]"
-            >
-              <div className="w-12 h-12 rounded-full bg-[#d6e3ff] flex items-center justify-center">
-                <span className="material-symbols-outlined text-[#002045]">{icon}</span>
-              </div>
-              <div>
-                <p className="font-['Work_Sans'] text-[12px] font-semibold uppercase tracking-wider text-[#74777f]">
-                  {label}
-                </p>
-                <p className="font-['Be_Vietnam_Pro'] text-[28px] font-bold text-[#002045]">
-                  {value}
-                </p>
-              </div>
-            </div>
+        {/* Metrics grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[24px] mb-[48px]">
+          {METRICS.map((m) => (
+            <MetricCard key={m.label} {...m} />
           ))}
         </div>
 
-        {/* Admin profile */}
-        <section className="bg-white rounded-xl border border-[#e0e3e5] p-[24px] shadow-[0px_4px_20px_rgba(26,54,93,0.05)]">
-          <h2 className="font-['Be_Vietnam_Pro'] text-[24px] font-semibold text-[#002045] mb-4">
-            Admin Profile
-          </h2>
-          {profile ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {Object.entries(profile).map(([key, val]) => (
-                <div key={key}>
-                  <p className="font-['Work_Sans'] text-[12px] font-semibold uppercase tracking-wider text-[#74777f]">
-                    {key}
-                  </p>
-                  <p className="font-['Work_Sans'] text-[16px] text-[#191c1e] mt-0.5">
-                    {String(val)}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="font-['Work_Sans'] text-[16px] text-[#43474e]">
-              No profile data available.
-            </p>
-          )}
-        </section>
+        {/* Top plans table */}
+        <TopPlansTable />
       </main>
     </div>
   );

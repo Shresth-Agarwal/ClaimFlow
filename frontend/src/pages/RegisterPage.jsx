@@ -1,10 +1,32 @@
-import BrandPanel from '../components/auth/BrandPanel';
+import { useState } from 'react';
 import RegisterForm from '../components/auth/RegisterForm';
 
+const PANEL_CONTENT = {
+  user: {
+    heading: "Secure your family's tomorrow, today.",
+    body: 'Join thousands of trustful Indians who have chosen our platform for transparent, reliable, and accessible insurance solutions.',
+    badges: [
+      { icon: 'verified', label: 'IRDAI Registered' },
+      { icon: 'support_agent', label: '24/7 Support' },
+    ],
+  },
+  agent: {
+    heading: 'Empower your career with ClaimFlow.',
+    body: 'Become a certified partner and help thousands of Indians secure their future with transparent, reliable, and accessible insurance solutions.',
+    badges: [
+      { icon: 'verified', label: 'IRDAI Partner' },
+      { icon: 'support_agent', label: '24/7 Support' },
+    ],
+  },
+};
+
 export default function RegisterPage() {
+  const [role, setRole] = useState('user');
+  const panel = PANEL_CONTENT[role];
+
   return (
     <div className="min-h-screen flex antialiased bg-[#f7f9fb] text-[#191c1e]">
-      {/* Left brand panel — register variant */}
+      {/* Left brand panel */}
       <div className="hidden md:flex w-full md:w-5/12 relative bg-[#1a365d] flex-col justify-between p-[48px] overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
@@ -26,35 +48,31 @@ export default function RegisterPage() {
           </span>
         </div>
 
-        {/* Value prop */}
+        {/* Value prop — updates based on role */}
         <div className="relative z-10 mt-[80px]">
-          <h2 className="font-['Be_Vietnam_Pro'] text-[32px] leading-[1.3] font-semibold text-white mb-[12px] leading-tight">
-            Secure your family's tomorrow, today.
+          <h2 className="font-['Be_Vietnam_Pro'] text-[32px] leading-[1.3] font-semibold text-white mb-[12px] transition-all duration-300">
+            {panel.heading}
           </h2>
-          <p className="font-['Work_Sans'] text-[18px] leading-[1.6] text-[#adc7f7]">
-            Join thousands of trustful Indians who have chosen our platform for
-            transparent, reliable, and accessible insurance solutions.
+          <p className="font-['Work_Sans'] text-[18px] leading-[1.6] text-[#adc7f7] transition-all duration-300">
+            {panel.body}
           </p>
 
           {/* Trust badges */}
           <div className="mt-[48px] flex gap-[24px] items-center opacity-80">
-            <div className="flex items-center gap-[4px]">
-              <span className="material-symbols-outlined text-[#fea619]">verified</span>
-              <span className="font-['Work_Sans'] text-[14px] font-semibold text-white">
-                IRDAI Registered
-              </span>
-            </div>
-            <div className="flex items-center gap-[4px]">
-              <span className="material-symbols-outlined text-[#fea619]">support_agent</span>
-              <span className="font-['Work_Sans'] text-[14px] font-semibold text-white">
-                24/7 Support
-              </span>
-            </div>
+            {panel.badges.map(({ icon, label }) => (
+              <div key={label} className="flex items-center gap-[4px]">
+                <span className="material-symbols-outlined text-[#fea619]">{icon}</span>
+                <span className="font-['Work_Sans'] text-[14px] font-semibold text-white">
+                  {label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      <RegisterForm />
+      {/* Pass role state down so form and panel stay in sync */}
+      <RegisterForm role={role} onRoleChange={setRole} />
     </div>
   );
 }
